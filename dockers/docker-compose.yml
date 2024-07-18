@@ -1,0 +1,22 @@
+name: escrito-2-martin-acosta
+
+services:
+  db:
+    build:
+      context: ./mysql-db
+    container_name: escrito-2-martin-acosta-db
+
+    # restart: on-failure
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "prog321"
+      TZ: America/Montevideo
+    volumes:
+      - ./db.sql:/docker-entrypoint-initdb.d/start.sql
+      - escrito-2-martin-acosta-db-volume:/var/lib/mysql
+
+
+volumes:
+  escrito-2-martin-acosta-db-volume: {}
+  
