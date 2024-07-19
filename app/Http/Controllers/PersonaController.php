@@ -26,9 +26,13 @@ class PersonaController extends Controller
         return response()->json([], 400);
     }
 
-    public function listar()
+    public function listar(Request $request)
     {
-        $personas = Persona::all();
+        $personas = Persona::where('nombre', 'like', '%' . $request->get('nombre') . '%')
+        ->where('apellido', 'like', '%' . $request->get('apellido') . '%')
+        ->where('telefono', 'like', '%' . $request->get('telefono') . '%')
+        ->paginate(10);
+        
         return response()->json($personas, 200);
     }
 }
