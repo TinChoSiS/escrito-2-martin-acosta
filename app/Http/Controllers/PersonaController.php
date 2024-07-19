@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Persona;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isEmpty;
+
 class PersonaController extends Controller
 {
     public function alta(Request $request)
@@ -30,5 +32,14 @@ class PersonaController extends Controller
     {
         $personas = Persona::all();
         return response()->json($personas, 200);
+    }
+
+    public function buscar($id)
+    {
+        $persona = Persona::find($id);
+
+        return $persona
+            ? response()->json($persona, 200)
+            : response()->json([], 404);
     }
 }
