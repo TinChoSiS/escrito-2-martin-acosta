@@ -31,10 +31,10 @@ class PersonaController extends Controller
     public function listar(Request $request)
     {
         $personas = Persona::where('nombre', 'like', '%' . $request->get('nombre') . '%')
-        ->where('apellido', 'like', '%' . $request->get('apellido') . '%')
-        ->where('telefono', 'like', '%' . $request->get('telefono') . '%')
-        ->paginate(10);
-        
+            ->where('apellido', 'like', '%' . $request->get('apellido') . '%')
+            ->where('telefono', 'like', '%' . $request->get('telefono') . '%')
+            ->paginate(10);
+
         return response()->json($personas, 200);
     }
 
@@ -45,5 +45,23 @@ class PersonaController extends Controller
         return $persona
             ? response()->json($persona, 200)
             : response()->json([], 404);
+    }
+
+    public function modificar(Request $request, $id)
+    {
+        if (
+            !$request->post('nombre') && !$request->post('apellido') && !$request->post('telefono')
+        ) return response()->json([], 400);
+
+        $persona = Persona::find($id);
+
+        if (!$persona) return response()->json([], 404);
+
+        if ($request->post('nombre')) $persona->nombre = $request->post('nombre');
+        if ($request->post('apellido')) $persona->apellido = $request->post('apellido');
+        if ($request->post('telefono')) $persona->telefono = $request->post('telefono');
+
+        $persona->save();
+        return response()->json($persona, 200);   
     }
 }
