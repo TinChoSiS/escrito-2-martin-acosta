@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Persona;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -158,5 +159,30 @@ class PersonaTest extends TestCase
 
         $response->assertJson(['data' => [$persona]]);
         $response->assertStatus(200);
+    }
+
+    public function test_buscar_persona()
+    {
+        $persona = [
+            'id' => 9999999,
+            'nombre' => 'ElViejo',
+            'apellido' => 'DeLaBolsa',
+            'telefono' => '6767676767',
+        ];
+
+        Persona::create($persona);
+
+        $response = $this->get("/api/v1/buscar/$persona[id]");
+
+        $response->assertJson($persona);
+        $response->assertStatus(200);
+    }
+
+    public function test_buscar_persona_no_encontrada()
+    {
+        $response = $this->get('/api/v1/buscar/99999999999999999999');
+
+        $response->assertJson([]);
+        $response->assertStatus(404);
     }
 }
