@@ -64,4 +64,16 @@ class PersonaController extends Controller
         $persona->save();
         return response()->json($persona, 200);   
     }
+    
+    public function eliminar($id)
+    {
+        $persona = Persona::find($id);
+
+        if ($persona) {
+            $persona->delete();
+            return response()->json([], 204);
+        }
+
+        return response()->json([], 404);
+    }
 }
