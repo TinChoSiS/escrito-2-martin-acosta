@@ -13,7 +13,7 @@ class PersonaTest extends TestCase
 
     public function test_alta_sin_datos()
     {
-        $response = $this->post('/api/alta');
+        $response = $this->post('/api/v1/alta');
 
         $response->assertStatus(400);
     }
