@@ -11,6 +11,7 @@ use Tests\TestCase;
 class PersonaTest extends TestCase
 {
     use DatabaseTransactions;
+    use WithFaker;
 
     public function test_alta_sin_datos()
     {
@@ -21,17 +22,15 @@ class PersonaTest extends TestCase
 
     function test_alta_con_datos()
     {
-        $response = $this->post('/api/v1/alta', [
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '1234567890',
-        ]);
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
+        ];
 
-        $response->assertJson([
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '1234567890',
-        ]);
+        $response = $this->post('/api/v1/alta', $personaDatos);
+
+        $response->assertJson($personaDatos);
 
         $response->assertJsonStructure([
             'id',
@@ -75,15 +74,19 @@ class PersonaTest extends TestCase
 
     function test_listar_con_filtros()
     {
-        $peronsa = [
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
         ];
 
-        $this->post('/api/v1/alta', $peronsa);
+        $this->post('/api/v1/alta', $personaDatos);
 
-        $response = $this->get('/api/v1/listar?nombre=ElViejo&apellido=DeLaBolsa&telefono=6767676767');
+        $response = $this->get(
+            "/api/v1/listar?nombre=".
+            "$personaDatos[nombre]&".
+            "apellido=$personaDatos[apellido]&". 
+            "telefono=$personaDatos[telefono]");
 
         $response->assertJsonStructure([
             'current_page',
@@ -108,73 +111,72 @@ class PersonaTest extends TestCase
             'total',
         ]);
 
-        $response->assertJson(['data' => [$peronsa]]);
+        $response->assertJson(['data' => [$personaDatos]]);
 
         $response->assertStatus(200);
     }
 
     public function test_listar_con_filtro_nombre()
     {
-        $persona = [
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
         ];
 
-        $this->post('/api/v1/alta', $persona);
+        $this->post('/api/v1/alta', $personaDatos);
 
-        $response = $this->get('/api/v1/listar?nombre=ElVi');
+        $response = $this->get("/api/v1/listar?nombre=$personaDatos[nombre]");
 
-        $response->assertJson(['data' => [$persona]]);
+        $response->assertJson(['data' => [$personaDatos]]);
         $response->assertStatus(200);
     }
 
     public function test_listar_con_filtro_apellido()
     {
-        $persona = [
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
         ];
 
-        $this->post('/api/v1/alta', $persona);
+        $this->post('/api/v1/alta', $personaDatos);
 
-        $response = $this->get('/api/v1/listar?apellido=DeLa');
+        $response = $this->get("/api/v1/listar?apellido=$personaDatos[apellido]");
 
-        $response->assertJson(['data' => [$persona]]);
+        $response->assertJson(['data' => [$personaDatos]]);
         $response->assertStatus(200);
     }
 
     public function test_listar_con_filtro_telefono()
     {
-        $persona = [
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
         ];
 
-        $this->post('/api/v1/alta', $persona);
+        $this->post('/api/v1/alta', $personaDatos);
 
-        $response = $this->get('/api/v1/listar?telefono=6767');
+        $response = $this->get("/api/v1/listar?telefono=$personaDatos[telefono]");
 
-        $response->assertJson(['data' => [$persona]]);
+        $response->assertJson(['data' => [$personaDatos]]);
         $response->assertStatus(200);
     }
 
     public function test_buscar_persona()
     {
-        $persona = [
-            'id' => 9999999,
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
         ];
 
-        Persona::create($persona);
+        $persona = Persona::create($personaDatos);
 
         $response = $this->get("/api/v1/buscar/$persona[id]");
 
-        $response->assertJson($persona);
+        $response->assertJson($personaDatos);
         $response->assertStatus(200);
     }
 
@@ -188,27 +190,17 @@ class PersonaTest extends TestCase
 
     public function test_modificar_persona()
     {
-        $persona = [
-            'id' => 9999999,
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
         ];
 
-        Persona::create($persona);
+        $persona = Persona::create($personaDatos);
 
-        $response = $this->put("/api/v1/modificar/$persona[id]", [
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
-        ]);
+        $response = $this->put("/api/v1/modificar/$persona[id]", $personaDatos);
 
-        $response->assertJson([
-            'id' => 9999999,
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
-        ]);
+        $response->assertJson($personaDatos);
 
         $response->assertStatus(200);
     }
@@ -216,9 +208,9 @@ class PersonaTest extends TestCase
     public function test_modificar_persona_no_encontrada()
     {
         $response = $this->put('/api/v1/modificar/99999999999999999999', [
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->name,
+            'telefono' => $this->faker->name,
         ]);
 
         $response->assertJson([]);
@@ -234,14 +226,13 @@ class PersonaTest extends TestCase
 
     public function test_modificar_persona_con_datos_vacios()
     {
-        $persona = [
-            'id' => 9999999,
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
         ];
 
-        Persona::create($persona);
+        $persona = Persona::create($personaDatos);
 
         $response = $this->put("/api/v1/modificar/$persona[id]");
 
@@ -250,24 +241,22 @@ class PersonaTest extends TestCase
 
     public function test_modificar_persona_con_nombre()
     {
-        $persona = [
-            'id' => 9999999,
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
         ];
 
-        Persona::create($persona);
+        $persona = Persona::create($personaDatos);
 
         $response = $this->put("/api/v1/modificar/$persona[id]", [
-            'nombre' => 'ElViejo2',
+            'nombre' => 'ElViejo',
         ]);
 
         $response->assertJson([
-            'id' => 9999999,
-            'nombre' => 'ElViejo2',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+            'nombre' => 'ElViejo',
+            'apellido' => $personaDatos['apellido'],
+            'telefono' => $personaDatos['telefono'],
         ]);
 
         $response->assertStatus(200);
@@ -275,24 +264,22 @@ class PersonaTest extends TestCase
 
     public function test_modificar_persona_con_apellido()
     {
-        $persona = [
-            'id' => 9999999,
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
         ];
 
-        Persona::create($persona);
+        $persona = Persona::create($personaDatos);
 
         $response = $this->put("/api/v1/modificar/$persona[id]", [
-            'apellido' => 'DeLaBolsa2',
+            'apellido' => 'DeLaBolsa',
         ]);
 
         $response->assertJson([
-            'id' => 9999999,
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa2',
-            'telefono' => '6767676767',
+            'nombre' => $personaDatos['nombre'],
+            'apellido' => 'DeLaBolsa',
+            'telefono' => $personaDatos['telefono'],
         ]);
 
         $response->assertStatus(200);
@@ -300,23 +287,21 @@ class PersonaTest extends TestCase
 
     public function test_modificar_persona_con_telefono()
     {
-        $persona = [
-            'id' => 9999999,
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
-            'telefono' => '6767676767',
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
         ];
 
-        Persona::create($persona);
+        $persona = Persona::create($personaDatos);
 
         $response = $this->put("/api/v1/modificar/$persona[id]", [
             'telefono' => '6767676768',
         ]);
 
         $response->assertJson([
-            'id' => 9999999,
-            'nombre' => 'ElViejo',
-            'apellido' => 'DeLaBolsa',
+            'nombre' => $personaDatos['nombre'],
+            'apellido' => $personaDatos['apellido'],
             'telefono' => '6767676768',
         ]);
 
