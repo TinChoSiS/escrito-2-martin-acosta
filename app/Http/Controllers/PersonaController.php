@@ -10,14 +10,14 @@ class PersonaController extends Controller
     public function alta(Request $request)
     {
         if (
-            $request->has('nombre') &&
-            $request->has('apellido') &&
-            $request->has('telefono')
+            $request->post('nombre') &&
+            $request->post('apellido') &&
+            $request->post('telefono')
         ) {
             $persona = new Persona([
-                'nombre' => $request->nombre,
-                'apellido' => $request->apellido,
-                'telefono' => $request->telefono,
+                'nombre' => $request->post('nombre'),
+                'apellido' => $request->post('apellido'),
+                'telefono' => $request->post('telefono'),
             ]);
             $persona->save();
             return response()->json($persona, 201);
