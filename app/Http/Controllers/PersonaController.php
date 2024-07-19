@@ -9,11 +9,20 @@ class PersonaController extends Controller
 {
     public function alta(Request $request)
     {
-        $persona = new Persona();
-        $persona->nombre = $request->nombre;
-        $persona->apellido = $request->apellido;
-        $persona->telefono = $request->telefono;
-        $persona->save();
-        return response()->json([], 201);
+        if (
+            $request->has('nombre') &&
+            $request->has('apellido') &&
+            $request->has('telefono')
+        ) {
+            $persona = new Persona([
+                'nombre' => $request->nombre,
+                'apellido' => $request->apellido,
+                'telefono' => $request->telefono,
+            ]);
+            $persona->save();
+            return response()->json([], 201);
+        }
+
+        return response()->json([], 400);
     }
 }
