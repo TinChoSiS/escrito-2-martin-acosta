@@ -185,4 +185,141 @@ class PersonaTest extends TestCase
         $response->assertJson([]);
         $response->assertStatus(404);
     }
+
+    public function test_modificar_persona()
+    {
+        $persona = [
+            'id' => 9999999,
+            'nombre' => 'ElViejo',
+            'apellido' => 'DeLaBolsa',
+            'telefono' => '6767676767',
+        ];
+
+        Persona::create($persona);
+
+        $response = $this->put("/api/v1/modificar/$persona[id]", [
+            'nombre' => 'ElViejo',
+            'apellido' => 'DeLaBolsa',
+            'telefono' => '6767676767',
+        ]);
+
+        $response->assertJson([
+            'id' => 9999999,
+            'nombre' => 'ElViejo',
+            'apellido' => 'DeLaBolsa',
+            'telefono' => '6767676767',
+        ]);
+
+        $response->assertStatus(200);
+    }
+
+    public function test_modificar_persona_no_encontrada()
+    {
+        $response = $this->put('/api/v1/modificar/99999999999999999999', [
+            'nombre' => 'ElViejo',
+            'apellido' => 'DeLaBolsa',
+            'telefono' => '6767676767',
+        ]);
+
+        $response->assertJson([]);
+        $response->assertStatus(404);
+    }
+
+    public function test_modificar_persona_sin_datos()
+    {
+        $response = $this->put('/api/v1/modificar/99999999999999999999');
+
+        $response->assertStatus(400);
+    }
+
+    public function test_modificar_persona_con_datos_vacios()
+    {
+        $persona = [
+            'id' => 9999999,
+            'nombre' => 'ElViejo',
+            'apellido' => 'DeLaBolsa',
+            'telefono' => '6767676767',
+        ];
+
+        Persona::create($persona);
+
+        $response = $this->put("/api/v1/modificar/$persona[id]");
+
+        $response->assertStatus(400);
+    }
+
+    public function test_modificar_persona_con_nombre()
+    {
+        $persona = [
+            'id' => 9999999,
+            'nombre' => 'ElViejo',
+            'apellido' => 'DeLaBolsa',
+            'telefono' => '6767676767',
+        ];
+
+        Persona::create($persona);
+
+        $response = $this->put("/api/v1/modificar/$persona[id]", [
+            'nombre' => 'ElViejo2',
+        ]);
+
+        $response->assertJson([
+            'id' => 9999999,
+            'nombre' => 'ElViejo2',
+            'apellido' => 'DeLaBolsa',
+            'telefono' => '6767676767',
+        ]);
+
+        $response->assertStatus(200);
+    }
+
+    public function test_modificar_persona_con_apellido()
+    {
+        $persona = [
+            'id' => 9999999,
+            'nombre' => 'ElViejo',
+            'apellido' => 'DeLaBolsa',
+            'telefono' => '6767676767',
+        ];
+
+        Persona::create($persona);
+
+        $response = $this->put("/api/v1/modificar/$persona[id]", [
+            'apellido' => 'DeLaBolsa2',
+        ]);
+
+        $response->assertJson([
+            'id' => 9999999,
+            'nombre' => 'ElViejo',
+            'apellido' => 'DeLaBolsa2',
+            'telefono' => '6767676767',
+        ]);
+
+        $response->assertStatus(200);
+    }
+
+    public function test_modificar_persona_con_telefono()
+    {
+        $persona = [
+            'id' => 9999999,
+            'nombre' => 'ElViejo',
+            'apellido' => 'DeLaBolsa',
+            'telefono' => '6767676767',
+        ];
+
+        Persona::create($persona);
+
+        $response = $this->put("/api/v1/modificar/$persona[id]", [
+            'telefono' => '6767676768',
+        ]);
+
+        $response->assertJson([
+            'id' => 9999999,
+            'nombre' => 'ElViejo',
+            'apellido' => 'DeLaBolsa',
+            'telefono' => '6767676768',
+        ]);
+
+        $response->assertStatus(200);
+    }
 }
