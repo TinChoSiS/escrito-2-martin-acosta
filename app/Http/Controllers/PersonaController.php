@@ -20,7 +20,7 @@ class PersonaController extends Controller
                 'telefono' => $request->telefono,
             ]);
             $persona->save();
-            return response()->json([], 201);
+            return response()->json($persona, 201);
         }
 
         return response()->json([], 400);
