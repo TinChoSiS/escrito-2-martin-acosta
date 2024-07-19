@@ -25,4 +25,10 @@ class PersonaController extends Controller
 
         return response()->json([], 400);
     }
+
+    public function listar()
+    {
+        $personas = Persona::all();
+        return response()->json($personas, 200);
+    }
 }
