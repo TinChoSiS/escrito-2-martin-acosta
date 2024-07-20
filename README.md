@@ -71,8 +71,10 @@ http://localhost:8000/api/v1/listar
 ``` ruby
     http://localhost:8000/api/v1/eliminar/{id}
 ```
-``` 
-## Segundo Escrito
+##
+### Letra
+
+#### Segundo Escrito
 Crear una API que permita realizar Alta, baja, modificacion, listado y busqueda de Personas, con los siguientes campos (3 puntos)
 - ID
 - Nombre
@@ -86,4 +88,4 @@ Versionar con git, y subir a Github. Se deben tener al menos 8 commits que versi
 Trabajar con ramas para cada tarea (Alta, Baja, Modificacion, listado y busqueda, ademas de los tests) (3 puntos) 
 
 Se debe utilizar PHP 8, Laravel 8.6.12, y principios de codigo limpio para todo
-```
+
