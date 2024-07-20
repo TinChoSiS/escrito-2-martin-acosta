@@ -72,6 +72,12 @@ http://localhost:8000/api/v1/listar
     http://localhost:8000/api/v1/eliminar/{id}
 ```
 ##
+### Git Graph
+
+  <img src="https://github.com/user-attachments/assets/7561b3a0-b41b-4783-80aa-f6331a3d0559" alt="gitgraph">
+
+
+##
 ### Letra
 
 #### Segundo Escrito
