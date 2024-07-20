@@ -307,4 +307,27 @@ class PersonaTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_eliminar_persona()
+    {
+        $personaDatos = [
+            'nombre' => $this->faker->name,
+            'apellido' => $this->faker->lastName,
+            'telefono' => $this->faker->phoneNumber,
+        ];
+
+        $persona = Persona::create($personaDatos);
+
+        $response = $this->delete("/api/v1/eliminar/$persona[id]");
+
+        $response->assertStatus(204);
+    }
+
+    public function test_eliminar_persona_no_encontrada()
+    {
+        $response = $this->delete('/api/v1/eliminar/99999999999999999999');
+
+        $response->assertJson([]);
+        $response->assertStatus(404);
+    }
 }
