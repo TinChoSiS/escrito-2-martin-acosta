@@ -21,7 +21,8 @@ Se debe utilizar PHP 8, Laravel 8.6.12, y principios de codigo limpio para todo
 - Clonar el repositorio 
   - ```git clone git@github.com:TinChoSiS/escrito-2-martin-acosta.git```
   - ```cd escrito-2-martin-acosta```
-- ingresar a la carpeta ```./docker``` para desplegar la base de datos mysql en un contendor, el mismo carga el SQL con la creación de la BD y la tabla correspondiente para el correcto funcionamiento. ```docker compose up -d``` 
+- ingresar a la carpeta ```./docker``` para desplegar la base de datos mysql en un contendor, el mismo carga el SQL con la creación de la BD y la tabla correspondiente para el correcto funcionamiento.
+      ```docker compose up -d``` 
 
 ## Iniciar el servidor de desarrollo con php
 - ```composer install``` para instalar las dependencias necesarias.
